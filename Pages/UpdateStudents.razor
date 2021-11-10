@@ -1,0 +1,80 @@
+﻿@page "/students/update/{id}"
+@using ServerBlazorEF.Data
+@using ServerBlazorEF.Models
+@inject StudentService studentService
+@inject NavigationManager NavManager
+<h1>Update a Student</h1>
+
+@if (students != null) // Update & Delete form
+{
+    <EditForm Model="@s" OnValidSubmit="@Update">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <InputText placeholder="First Name" id="firstName" @bind-Value="@s.FirstName" /><br />
+        <InputText placeholder="Last Name" id="lastName" @bind-Value="@s.LastName" /><br />
+        <InputText placeholder="School" id="school" @bind-Value="@s.School" /><br />
+        <button type="submit" class="btn btn-primary">Update</button>
+        <button @onclick="@Return" class="btn btn-primary">Return</button>
+    </EditForm>
+}
+
+
+@code {
+    List<Student> students;
+
+    [Parameter]
+    public string Id {get; set;}
+
+    string studentId;
+    string firstName;
+    string lastName;
+    string school;
+
+    Student student;
+
+    Student s;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await load();
+    }
+
+    protected async Task load()
+    {
+        students = await studentService.GetStudentsAsync();
+        s = students.Where(f => f.StudentId == Id).FirstOrDefault();
+    }
+
+
+    protected void Return()
+    {
+        NavManager.NavigateTo("/students");
+    }
+
+    protected async Task Update()
+    {
+
+        Student i = new Student()
+        {
+            StudentId = studentId,
+            FirstName = firstName,
+            LastName = lastName,
+            School = school
+        };
+
+        await studentService.UpdateStudentAsync(studentId, i);
+        await load();
+        NavManager.NavigateTo("/students");
+    }
+
+
+    protected async Task Show(string id)
+    {
+        student = await studentService.GetStudentByIdAsync(id);
+        studentId = student.StudentId;
+        firstName = student.FirstName;
+        lastName = student.LastName;
+        school = student.School;
+    }
+
+}

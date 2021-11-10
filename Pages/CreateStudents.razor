@@ -1,0 +1,69 @@
+﻿@page "/students/create"
+@using ServerBlazorEF.Data
+@using ServerBlazorEF.Models
+@inject NavigationManager NavManager
+@inject StudentService studentService
+<h1>Add a Student</h1>
+
+@if (students != null) // Insert form
+{
+    <input placeholder="First Name" @bind="@firstName" /><br />
+    <input placeholder="Last Name" @bind="@lastName" /><br />
+    <input placeholder="School" @bind="@school" /><br />
+    <button @onclick="@Insert" class="btn btn-warning">Insert</button>
+    <button @onclick="@ClearFields" class="btn btn-primary">Clear</button>
+}
+
+
+@code {
+    List<Student> students;
+
+    string studentId;
+    string firstName;
+    string lastName;
+    string school;
+    Student student;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await load();
+    }
+
+    protected async Task load()
+    {
+        students = await studentService.GetStudentsAsync();
+    }
+
+    protected async Task Insert()
+    {
+        Student s = new Student()
+        {
+            StudentId = Guid.NewGuid().ToString(),
+            FirstName = firstName,
+            LastName = lastName,
+            School = school
+        };
+
+        await studentService.InsertStudentAsync(s);
+        await load();
+        NavManager.NavigateTo("/students");
+    }
+
+    protected void ClearFields()
+    {
+        studentId = string.Empty;
+        firstName = string.Empty;
+        lastName = string.Empty;
+        school = string.Empty;
+    }
+
+    protected async Task Show(string id)
+    {
+        student = await studentService.GetStudentByIdAsync(id);
+        studentId = student.StudentId;
+        firstName = student.FirstName;
+        lastName = student.LastName;
+        school = student.School;
+    }
+
+}

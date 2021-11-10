@@ -1,0 +1,82 @@
+﻿@page "/students/delete/{id}"
+@using ServerBlazorEF.Data
+@using ServerBlazorEF.Models
+@inject StudentService studentService
+@inject NavigationManager NavManager
+<h1>Delete Student</h1>
+
+@if (students == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <NavLink href="/students" class="btn btn-primary">Return</NavLink>
+    <table class='table table-hover'>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>School</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in s)
+            {
+                <tr @onclick="@(() => Show(item.StudentId))">
+                    <td>@item.StudentId</td>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>@item.School</td>
+                    <td><button @onclick="@Delete" class="btn btn-danger">Delete</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    List<Student> students;
+    List<Student> s;
+
+    Student stud;
+    
+    [Parameter]
+    public string Id {get; set;}
+    string studentId;
+    string firstName;
+    string lastName;
+    string school;
+    Student student;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await load();
+    }
+
+    protected async Task load()
+    {
+        students = await studentService.GetStudentsAsync();
+        s = students.Where(f => f.StudentId == Id).ToList();
+        stud = students.Where(f => f.StudentId == Id).FirstOrDefault();
+
+    }
+    protected async Task Delete()
+    {
+        await studentService.DeleteStudentAsync(stud.StudentId);
+        await load();
+        NavManager.NavigateTo("/students");
+    }
+
+    protected async Task Show(string id)
+    {
+        student = await studentService.GetStudentByIdAsync(id);
+        studentId = student.StudentId;
+        firstName = student.FirstName;
+        lastName = student.LastName;
+        school = student.School;
+    }
+
+}

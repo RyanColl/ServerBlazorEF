@@ -1,0 +1,77 @@
+﻿@page "/students"
+@using ServerBlazorEF.Data
+@using ServerBlazorEF.Models
+@inject StudentService studentService
+<h1>Students</h1>
+
+<p>This component demonstrates managing students data.</p>
+
+@if (students == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <NavLink href="/students/create" class="btn btn-success">Add</NavLink>
+    <table class='table table-hover'>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>School</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in students)
+            {
+                <tr @onclick="@(() => Show(item.StudentId))">
+                    <td>@item.StudentId</td>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>@item.School</td>
+                    <td><NavLink href="@($"students/update/{item.StudentId}")" class="btn btn-primary">Update</NavLink></td>
+                    <td><NavLink href="@($"students/delete/{item.StudentId}")" class="btn btn-danger">Delete</NavLink></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    List<Student> students;
+
+    string studentId;
+    string firstName;
+    string lastName;
+    string school;
+    Student student;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await load();
+    }
+
+    protected async Task load()
+    {
+        students = await studentService.GetStudentsAsync();
+    }
+    protected async Task Delete()
+    {
+        await studentService.DeleteStudentAsync(studentId);
+        
+        await load();
+       
+    }
+
+    protected async Task Show(string id)
+    {
+        student = await studentService.GetStudentByIdAsync(id);
+        studentId = student.StudentId;
+        firstName = student.FirstName;
+        lastName = student.LastName;
+        school = student.School;
+    }
+
+}
