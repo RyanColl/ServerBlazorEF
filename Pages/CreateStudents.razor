@@ -4,25 +4,36 @@
 @inject NavigationManager NavManager
 @inject StudentService studentService
 <h1>Add a Student</h1>
+<NavLink href="/students" class="btn btn-success">Return</NavLink><br />
 
 @if (students != null) // Insert form
 {
-    <input placeholder="First Name" @bind="@firstName" /><br />
-    <input placeholder="Last Name" @bind="@lastName" /><br />
-    <input placeholder="School" @bind="@school" /><br />
-    <button @onclick="@Insert" class="btn btn-warning">Insert</button>
-    <button @onclick="@ClearFields" class="btn btn-primary">Clear</button>
+    <EditForm Model="@student" OnValidSubmit="@Insert">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <InputText placeholder="First Name" id="firstName" @bind-Value="@student.FirstName" /><br />
+        <InputText placeholder="Last Name" id="lastName" @bind-Value="@student.LastName" /><br />
+        <InputText placeholder="School" id="school" @bind-Value="@student.School" /><br />
+        <button type="submit" class="btn btn-warning">Insert</button>
+        <button type="button" @onclick="@ClearFields" class="btn btn-primary">Clear</button>
+    </EditForm>
+   
 }
 
 
 @code {
-    List<Student> students;
-
+    List<Student> students; 
     string studentId;
     string firstName;
     string lastName;
     string school;
-    Student student;
+    Student student = new Student
+    {
+        StudentId = Guid.NewGuid().ToString(),
+        FirstName = "",
+        LastName = "",
+        School = ""
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -36,34 +47,16 @@
 
     protected async Task Insert()
     {
-        Student s = new Student()
-        {
-            StudentId = Guid.NewGuid().ToString(),
-            FirstName = firstName,
-            LastName = lastName,
-            School = school
-        };
-
-        await studentService.InsertStudentAsync(s);
+        await studentService.InsertStudentAsync(student);
         await load();
         NavManager.NavigateTo("/students");
     }
 
     protected void ClearFields()
     {
-        studentId = string.Empty;
-        firstName = string.Empty;
-        lastName = string.Empty;
-        school = string.Empty;
-    }
-
-    protected async Task Show(string id)
-    {
-        student = await studentService.GetStudentByIdAsync(id);
-        studentId = student.StudentId;
-        firstName = student.FirstName;
-        lastName = student.LastName;
-        school = student.School;
+        student.School = "";
+        student.FirstName = "";
+        student.LastName = "";
     }
 
 }
