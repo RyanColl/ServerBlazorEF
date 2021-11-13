@@ -24,7 +24,7 @@ else
         <tbody>
             @foreach (var item in s)
             {
-                <tr @onclick="@(() => Show(item.StudentId))">
+                <tr>
                     <td>@item.StudentId</td>
                     <td>@item.FirstName</td>
                     <td>@item.LastName</td>
@@ -59,24 +59,14 @@ else
     protected async Task load()
     {
         students = await studentService.GetStudentsAsync();
-        s = students.Where(f => f.StudentId == Id).ToList();
-        stud = students.Where(f => f.StudentId == Id).FirstOrDefault();
+        s = students.Where(f => f.StudentId == Int32.Parse(Id)).ToList();
+        stud = students.Where(f => f.StudentId == Int32.Parse(Id)).FirstOrDefault();
 
     }
     protected async Task Delete()
     {
         await studentService.DeleteStudentAsync(stud.StudentId);
-        await load();
         NavManager.NavigateTo("/students");
-    }
-
-    protected async Task Show(string id)
-    {
-        student = await studentService.GetStudentByIdAsync(id);
-        studentId = student.StudentId;
-        firstName = student.FirstName;
-        lastName = student.LastName;
-        school = student.School;
     }
 
 }

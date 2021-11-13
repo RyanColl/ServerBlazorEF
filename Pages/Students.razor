@@ -25,7 +25,7 @@ else
         <tbody>
             @foreach (var item in students)
             {
-                <tr @onclick="@(() => Show(item.StudentId))">
+                <tr>
                     <td>@item.StudentId</td>
                     <td>@item.FirstName</td>
                     <td>@item.LastName</td>
@@ -56,22 +56,6 @@ else
     protected async Task load()
     {
         students = await studentService.GetStudentsAsync();
-    }
-    protected async Task Delete()
-    {
-        await studentService.DeleteStudentAsync(studentId);
-        
-        await load();
-       
-    }
-
-    protected async Task Show(string id)
-    {
-        student = await studentService.GetStudentByIdAsync(id);
-        studentId = student.StudentId;
-        firstName = student.FirstName;
-        lastName = student.LastName;
-        school = student.School;
     }
 
 }

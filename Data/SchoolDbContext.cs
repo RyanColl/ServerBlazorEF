@@ -17,25 +17,25 @@ namespace ServerBlazorEF.Data
             builder.Entity<Student>().HasData(
               new
               {
-                  StudentId = Guid.NewGuid().ToString(),
+                  StudentId = 1,
                   FirstName = "Jane",
                   LastName = "Smith",
                   School = "Medicine"
               }, new
               {
-                  StudentId = Guid.NewGuid().ToString(),
+                  StudentId = 2,
                   FirstName = "John",
                   LastName = "Fisher",
                   School = "Engineering"
               }, new
               {
-                  StudentId = Guid.NewGuid().ToString(),
+                  StudentId = 3,
                   FirstName = "Pamela",
                   LastName = "Baker",
                   School = "Food Science"
               }, new
               {
-                  StudentId = Guid.NewGuid().ToString(),
+                  StudentId = 4,
                   FirstName = "Peter",
                   LastName = "Taylor",
                   School = "Mining"

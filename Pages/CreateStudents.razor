@@ -11,9 +11,24 @@
     <EditForm Model="@student" OnValidSubmit="@Insert">
         <DataAnnotationsValidator />
         <ValidationSummary />
-        <InputText placeholder="First Name" id="firstName" @bind-Value="@student.FirstName" /><br />
-        <InputText placeholder="Last Name" id="lastName" @bind-Value="@student.LastName" /><br />
-        <InputText placeholder="School" id="school" @bind-Value="@student.School" /><br />
+        <InputText class="input-text" placeholder="First Name" id="firstName" @bind-Value="@student.FirstName" /><br />
+        <InputText class="input-text" placeholder="Last Name" id="lastName" @bind-Value="@student.LastName" /><br />
+        <InputText disabled="true" class="input-text" placeholder="Chosen School" id="school" @bind-Value="@student.School" /><br />
+        <span class="dropdown">
+            <button>Action</button>
+            <label>
+                <input type="checkbox">
+                <ul>
+                <li @onclick="() => ChooseSchool(me)">@me</li>
+                <li @onclick="() => ChooseSchool(co)">@co</li>
+                <li @onclick="() => ChooseSchool(nu)">@nu</li>
+                <li @onclick="() => ChooseSchool(mi)">@mi</li>
+                <li @onclick="() => ChooseSchool(sc)">@sc</li>
+                <li @onclick="() => ChooseSchool(bu)">@bu</li>
+                </ul>
+            </label>
+        </span>
+        @* <InputText placeholder="School" id="school" @bind-Value="@student.School" /><br /> *@
         <button type="submit" class="btn btn-warning">Insert</button>
         <button type="button" @onclick="@ClearFields" class="btn btn-primary">Clear</button>
     </EditForm>
@@ -23,18 +38,21 @@
 
 @code {
     List<Student> students; 
-    string studentId;
-    string firstName;
-    string lastName;
-    string school;
+    string studentId;  string firstName;
+    string lastName; string school;
+
+    string me = "Medicine"; string co = "Computing";
+    string nu = "Nursing"; string mi = "Mining";
+    string sc = "Science"; string bu = "Business";
     Student student = new Student
     {
-        StudentId = Guid.NewGuid().ToString(),
         FirstName = "",
         LastName = "",
         School = ""
     };
-
+    protected void ChooseSchool(string school) {
+        student.School = school;
+    }
     protected override async Task OnInitializedAsync()
     {
         await load();

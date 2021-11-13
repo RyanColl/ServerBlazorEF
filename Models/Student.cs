@@ -4,7 +4,9 @@ namespace ServerBlazorEF.Models
 {
     public class Student
     {
-        public string StudentId { get; set; }
+        [Required]
+        [Key]
+        public int StudentId { get; set; }
         [Required]
         public string FirstName { get; set; }
         [Required]

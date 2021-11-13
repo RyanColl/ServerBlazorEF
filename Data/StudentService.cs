@@ -49,7 +49,7 @@ namespace ServerBlazorEF.Data
             return student;
         }
 
-        public async Task<Student> DeleteStudentAsync(string id)
+        public async Task<Student> DeleteStudentAsync(int id)
         {
             var student = await _context.Students.FindAsync(id);
 
@@ -62,7 +62,7 @@ namespace ServerBlazorEF.Data
             return student;
         }
 
-        private bool StudentExists(string id)
+        private bool StudentExists(int id)
         {
             return _context.Students.Any(e => e.StudentId == id);
         }
